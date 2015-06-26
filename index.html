@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>RootMetrics D3 Charting Library</title>
+
+    <link href="dist/css/rm-chart-library.min.css" rel="stylesheet">
+   
+</head>
+<body>
+    <div class="container">        
+        <div id="scatterPlot"></div>
+        <div id="donutChart"></div>
+        <div id="doubleBar"></div>
+        <div id="barGraph"></div>
+    </div>
+    <script src="src/vendor/jquery/dist/jquery.min.js"></script>
+     <script src="src/vendor/d3/d3.min.js"></script>
+    <script src="dist/js/rm-chart-library.min.js"></script>
+    
+    
+    <script type="text/javascript">
+	    
+	    var dataSet = [
+		    {
+			    lower: 93.12,
+			    name: "AT&T",
+			    rank: 1,
+			    score: 93.423,
+			    upper: 99.123
+		    },
+		    {
+			    lower: 91.12,
+			    name: "Verizon",
+			    rank: 2,
+			    score: 92.423,
+			    upper: 97.123
+		    },
+		    {
+			    lower: 90.12,
+			    name: "Sprint",
+			    rank: 3,
+			    score: 91.423,
+			    upper: 95.123
+		    },
+		    {
+			    lower: 85.12,
+			    name: "T-Mobile",
+			    rank: 4,
+			    score: 89.423,
+			    upper: 93.123
+		    }
+	    ];
+	    
+	    
+	    var scatterData = [
+		    {
+			    x: 90,
+			    y: 75,
+			    name: 'Seattle, WA'
+		    },
+		    {
+			   x: 80,
+			    y: 85,
+			    name: 'Spokane, WA' 
+		    },
+		    {
+			   x: 65,
+			    y: 90,
+			    name: 'Portland, OR' 
+		    }
+	    ];
+	    
+	    var donutData = {
+	    		total: 100,
+	    		values: 50,
+	    		carrier: "Verizon"
+	    }	    
+	    
+		var doubleChartData = [
+			[  
+	               {  
+	                  name:"AT&T",
+	                  score:1.78069406798489,
+	                  lower: 1.6891300388673,
+	                  upper: 1.84175793915168
+	               },
+	               {  
+	                  name:"Sprint",
+	                  score:0.64960995113283,
+	                  lower: 0.553322892336557,
+	                  upper: 0.801963233665559
+	               },
+	               {  
+	                  name:"T-Mobile",
+	                  score:1.14396986817326,
+	                  lower: 0.873619195734281,
+	                  upper: 1.20135984890568
+	               },
+	               {  
+	                  name:"Verizon",
+	                  score:0.716538572538573,
+	                  lower: 0.564386580759831,
+	                  upper: 0.902739835592091
+	               }
+	        ],
+	        [  
+	               {  
+	                  name:"AT&T",
+	                  score:1.07590526309178,
+	                  lower: 0.85669184490207,
+	                  upper: 1.25899594356711
+	               },
+	               {  
+	                  name:"Sprint",
+	                  score:0.715810176837911,
+	                  lower: 0.623891366551038,
+	                  upper: 0.777899853707363
+	               },
+	               {  
+	                  name:"T-Mobile",
+	                  score:2.56676765188834,
+	                  lower: 2.30274306158957,
+	                  upper: 2.89308018965162
+	               },
+	               {  
+	                  name:"Verizon",
+	                  score:0.255240814440137,
+	                  lower: 0.208466763909148,
+	                  upper: 0.298036709134096
+	               }
+	        ]
+        ]
+
+
+	    	    
+	    var barChart = rmBarChart().dataset(dataSet).width(600).height(300);	    
+	    var chart = d3.select('#barGraph').call(barChart);		
+	    
+	    var scatterPlot = rmScatterPlot().dataset(scatterData).width(500).height(500);	  
+	    var scatter = d3.select('#scatterPlot').call(scatterPlot);
+	    
+	    var donutChart = rmDonutChart().dataset(donutData).height(300).width(300);
+	    var donut = d3.select("#donutChart").call(donutChart);
+	    
+	    var doubleBarChart = rmDoubleBarChart().dataset(doubleChartData).height(500).width(500);
+	    var doubleChart = d3.select("#doubleBar").call(doubleBarChart);
+					  
+	</script>
+</body>
+</html>

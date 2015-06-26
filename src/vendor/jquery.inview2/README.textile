@@ -1,0 +1,67 @@
+h1. jQuery inview2
+
+Event that is fired as soon as an element appears in the user's viewport.
+Modified version of protonet's jquery.inview to use the more modern (and much faster) getBoundingClientRect() method.
+Props to him for his work on the original inview, but I found myself in need of a better-performing solution.
+
+*Author:* Matthew Frey
+*Forked from:* "https://github.com/protonet/jquery.inview/":https://github.com/protonet/jquery.inview/
+*Requires:* jQuery 1.4+
+
+h2. Usage
+
+The script makes use of the new $.contains method - so it will only work with jQuery 1.4 upwards. If you need to use it with older versions of jQuery, drop a comment, and I'll post an alternative.
+
+The event will only fire when the element comes in to view of the viewport, and out of view. It won't keep firing if the user scrolls and the element remains in view.
+
+The variable after the event argument indicates the visible state in the viewport.
+
+bc.. $('div').bind('inview', function(event, isInView) {
+  if (isInView) {
+    // element is now visible in the viewport
+  } else {
+    // element has gone out of viewport
+  }
+});
+
+p. To stop listening for the event - simply unbind:
+
+bc.. $('div').unbind('inview');
+
+p. Remember you can also bind once:
+
+bc.. $('div').one('inview', fn);
+
+h2. Live events
+
+Yep, inview events can also be used with .live/.delegate methods.
+_Please note that this could slow down your app when the selector is too complex and/or matches a huge set of elements._
+The following code snippet only loads images when they appear in the browser's viewport.
+
+bc..  // Assuming that all images have set the 'data-src' attribute instead of the 'src'attribute
+  $("img[data-src]").live("inview", function() {
+    var $this = $(this);
+    $this.attr("src", $this.attr("data-src"));
+    // Remove it from the set of matching elements in order to avoid that the handler gets re-executed
+    $this.removeAttr("data-src");
+  });
+
+h2. How it works
+
+An interval in the background checks the position of the bounding rectangle of elements against the viewport dimensions and the scroll position.
+
+However, I wanted to create a utility that would only check the elements that were registered under the 'inview' event, i.e. I didn't want to keep checking the element list if we unbind from the event.
+
+This is achieved by dipping in to the $.cache store within jQuery, and looping through, looking for the elements tied to the 'inview' event.
+
+This way the user can treat it like a native event on the page.
+
+h2. Use cases
+
+* Reduce http requests and traffic on server by loading assets (images, javascript, html, ...) only when they are visible to the user
+* Endless scrolling (twitter-like)
+* Tracking (eg. to see whether a user has read an entire article)
+
+h2. Browser Compatibility
+
+Haven't had a chance to test this yet, but the cornerstone of this plugin, getBoundingClientRect, should work in any modern browser as well as IE7+

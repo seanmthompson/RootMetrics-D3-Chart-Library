@@ -1,0 +1,169 @@
+/* Carrier Colors */
+//us base colors
+@att-base-color: #5694b4;
+@cricket-base-color: #439474;
+@metropcs-base-color: #6764b3;
+@sprint-base-color: #e9b444;
+@tmobile-base-color: #d45da0;
+@verizon-base-color: #ca5b59;
+
+//us hover colors
+@att-hover-color: lighten(@att-base-color, 10%);
+@cricket-hover-color: lighten(@cricket-base-color, 10%);
+@metropcs-hover-color: lighten(@metropcs-base-color, 10%);
+@sprint-hover-color: lighten(@sprint-base-color, 10%);
+@tmobile-hover-color: lighten(@tmobile-base-color, 10%);
+@verizon-hover-color: lighten(@verizon-base-color, 10%);
+
+//uk base colors
+@ee-base-color: #2e9a9c;
+@o2-base-color: #2566a8;
+@vodafone-base-color: #eb5247;
+@three-base-color: #333333;
+@orange-base-color: #ff6c42;
+
+//uk hover colors
+@ee-hover-color: lighten(@ee-base-color, 10%);
+@o2-hover-color: lighten(@o2-base-color, 10%);
+@vodafone-hover-color: lighten(@vodafone-base-color, 10%);
+@three-hover-color: lighten(@three-base-color, 10%);
+@orange-hover-color: lighten(@orange-base-color, 10%);
+
+//oh canada colours
+@telus-base-color: #4e5cb5;
+@bell-base-color: #2876a5;
+@rogers-base-color: #d63e3e;
+@videotron-base-color: #fcc622;
+@wind-base-color: #ec7c23;
+
+//canada hovre colours
+@telus-hover-color: lighten(@telus-base-color, 10%);
+@bell-hover-color: lighten(@bell-base-color, 10%);
+@rogers-hover-color: lighten(@rogers-base-color, 10%);
+
+//tie colors
+@tie-base-color: #999;
+@tie-hover-color: lighten(@tie-base-color, 10%);
+@wifi-base-color: #555;
+
+.att, .at\&t, .AT\&T {
+    background: @att-base-color;
+    fill: @att-base-color;
+}
+
+.verizon, .Verizon {
+    background: @verizon-base-color;
+    fill: @verizon-base-color;
+}
+.tmobile, .t-mobile, .T-Mobile {
+    background: @tmobile-base-color;
+    fill: @tmobile-base-color;
+}
+.sprint, .Sprint {
+    background: @sprint-base-color;
+    fill: @sprint-base-color;
+}
+
+.cricket, .Cricket {
+    background: @cricket-base-color;
+    fill: @cricket-base-color;
+}
+
+.metropcs, .MetroPCS {
+    background: @metropcs-base-color;
+    fill: @metropcs-base-color;
+}
+
+.ee, .EE {
+    background: @ee-base-color;
+    fill: @ee-base-color;
+}
+.o2, .O2 {
+    background: @o2-base-color;
+    fill: @o2-base-color;
+}
+.vodafone, .Vodafone {
+    background: @vodafone-base-color;
+    fill: @vodafone-base-color;
+}
+.three, .Three {
+    background: @three-base-color;
+    fill: @three-base-color;
+}
+.orange, .Orange {
+    background: @orange-base-color;
+    fill: @orange-base-color;
+}
+
+.telus, .Telus {
+    background: @telus-base-color;
+    fill: @telus-base-color;
+}
+
+.wind, .Wind {
+    background: @wind-base-color;
+    fill: @wind-base-color;
+}
+.videotron, .Videotron {
+    background: @videotron-base-color;
+    fill: @videotron-base-color;
+}
+.bell, .Bell  {
+    background: @bell-base-color;
+    fill: @bell-base-color;
+}
+.rogers, .Rogers {
+    background: @rogers-base-color;
+    fill: @rogers-base-color;
+}
+
+.default, .tie, .Tie, .no.winner {
+    background: @tie-base-color;
+    fill: @tie-base-color;
+}
+
+.wi-fi, .Wi-Fi {
+	background: @wifi-base-color;
+	fill: @wifi-base-color;
+}
+
+
+.domain {
+	fill: none;
+	stroke: #e6e6e6;
+}
+
+.axis line {
+  stroke: #e6e6e6;
+}
+
+.donut-chart {
+	display: block; 
+	margin: 20px 0 20px;
+	
+	h3 {
+		margin: 0;
+	}
+	
+	p.small.grey {
+		margin: 0 0 10px;
+		color: #999;
+	}
+	
+		
+	.donut-background {
+		fill: #e6e6e6;
+	}
+	
+	.tally {
+		font-size: 50px;
+	}
+	
+	.carrier {
+		font-size: 20px;
+	}
+	
+	&.total-donuts {
+		margin-top: 20px;
+	}
+}

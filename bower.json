@@ -1,0 +1,22 @@
+{
+  "name": "RootMetrics-Chart-Library",
+  "version": "1.0.0",
+  "authors": [
+    "Sean Thompson <sean.thompson@rootmetrics.com>"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "~3.5.5",
+    "jquery": "~2.1.4"
+  }
+}
