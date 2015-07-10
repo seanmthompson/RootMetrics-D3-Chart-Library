@@ -85,7 +85,7 @@ var rmDonutChart = function() {
 	   				 .attr("y", height/2)
 	   				 .attr("x", width/2)
 	   				 .attr("fill", "#555")
-	   				 .text(dataset.total);
+	   				 .text(dataset.values);
 	   				 
 	   var carrierText = svg.append("text")
 	   				 .attr("text-anchor", "middle")
@@ -110,6 +110,12 @@ var rmDonutChart = function() {
 	    };
 	  });
 	}
+	
+	chart.margin = function(value) {
+        if (!arguments.length) { return margin; }
+        margin = value;
+        return chart;
+    };
 	
 	chart.width = function(value) {
         if (!arguments.length) { return width; }

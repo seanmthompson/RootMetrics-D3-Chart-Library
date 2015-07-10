@@ -3,11 +3,13 @@ var rmBarChart = function() {
 	'use strict';
 		
 	var dataset,
+		svg,
 		height = 400,
 	 	width = 600,
 		margin = {top: 40, right: 40, bottom: 40, left: 40},
 		min = 0,
 		max = 100,
+		errorBars = true,
 		animationComplete = false;
 	
 	var cwidth = width - margin.right - margin.left;
@@ -18,10 +20,11 @@ var rmBarChart = function() {
 		cwidth = width - margin.right - margin.left;
 		cheight = height - margin.top - margin.bottom;	
 		
-		selection.each(function(data) {
-			var div = d3.select(this),
-                svg = div.selectAll('svg').data([data]),
-                $div = $(div[0]);                          
+		selection.each(function(data) {			
+			var div = d3.select(this),                
+                $div = $(div[0]);      
+                
+            svg = div.selectAll('svg').data([data]);                        
                
             svg.enter().append('svg')
 	                   .call(chart.svgInit);    
@@ -38,6 +41,11 @@ var rmBarChart = function() {
 		});
 	}
 	
+	chart.update = function(data) {
+		dataset = data;
+		svg.call(chart.animate);
+	}
+	
 	chart.animate = function(svg) {
 		var barContent = svg.select('.bar-content');							
 		var bars = barContent.selectAll('.carrier-bar');	
@@ -48,8 +56,7 @@ var rmBarChart = function() {
 			.delay(function(d, i) { return 100 * i })
 			.ease('elastic')
 			.attr("height", function(d) { return cheight - y(d.score); })
-			.attr("y", function(d) { return y(d.score); })	
-			
+			.attr("y", function(d) { return y(d.score); })			
 	};	
 	
 	chart.svgInit = function(svg) {
@@ -60,7 +67,7 @@ var rmBarChart = function() {
         var g = svg.append('g')
             .attr('class', 'chart-content')
             .attr('transform', 'translate(' + [margin.left, margin.top] + ')');
-
+		
 		  	
 	  	var barWidth = cwidth / dataset.length;
 	  	var recWidth = barWidth / dataset.length;
@@ -111,51 +118,50 @@ var rmBarChart = function() {
 			.attr("width", recWidth)
 			.attr("transform", function(d, i) { return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth/2) + ",0)"; });
 			
-		bars.selectAll(".error-bar-top")
-			.data(dataset)
-			.enter()
-			.append("rect")
-			.attr("class", "error-bar-top")
-			.attr("height", 1)
-			.attr("width", recWidth/2)
-			.attr("transform", function(d, i) { 
-				var upperScale = y(d.upper);
-				var lowerScale = y(d.lower);
-				var difference = (upperScale - lowerScale) / 2;
-				return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + (y(d.score) + difference) + ")"; 
-			})			
-		
-		bars.selectAll(".error-bar-bottom")
-			.data(dataset)
-			.enter()
-			.append("rect")
-			.attr("class", "error-bar-bottom")
-			.attr("height", 1)
-			.attr("width", recWidth/2)
-			.attr("transform", function(d, i) {
-				var upperScale = y(d.upper);
-				var lowerScale = y(d.lower);
-				var difference = (upperScale - lowerScale) / 2;
-				return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + (y(d.score) - difference) + ")"; 
-			});
 			
-		bars.selectAll(".error-bar")
-			.data(dataset)
-			.enter()
-			.append("rect")
-			.attr("class", "error-bar")
-			.attr("width", 1)
-			.attr("transform", function(d, i) { 
-				var upperScale = y(d.upper);
-				var lowerScale = y(d.lower);
-				var difference = (upperScale - lowerScale) / 2;
-				return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + (y(d.score) + difference) + ")"; })
-			.attr("height", function(d) {
-				var upperScale = y(d.upper);
-				var lowerScale = y(d.lower);
-				return  (lowerScale - upperScale);
-		});	
-	
+		if(errorBars) { 
+			bars.selectAll(".error-bar-top")
+				.data(dataset)
+				.enter()
+				.append("rect")
+				.attr("class", "error-bar-top")
+				.attr("height", 1)
+				.attr("width", recWidth/2)
+				.attr("transform", function(d, i) { 
+					var upperScale = y(d.upper);
+					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + upperScale + ")"; 
+				})			
+			
+			bars.selectAll(".error-bar-bottom")
+				.data(dataset)
+				.enter()
+				.append("rect")
+				.attr("class", "error-bar-bottom")
+				.attr("height", 1)
+				.attr("width", recWidth/2)
+				.attr("transform", function(d, i) {
+					var lowerScale = y(d.lower);
+					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + lowerScale + ")"; 
+				});
+				
+			bars.selectAll(".error-bar")
+				.data(dataset)
+				.enter()
+				.append("rect")
+				.attr("class", "error-bar")
+				.attr("width", 1)
+				.attr("transform", function(d, i) { 
+					var upperScale = y(d.upper);
+					var lowerScale = y(d.lower);
+					var difference = (upperScale - lowerScale) / 2;
+					return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + upperScale + ")"; })
+				.attr("height", function(d) {
+					var upperScale = y(d.upper);
+					var lowerScale = y(d.lower);
+					return  (lowerScale - upperScale);
+			});	
+		};	
+		
 		bars.selectAll(".scoreText")
             .data(dataset)
             .enter()
@@ -165,7 +171,12 @@ var rmBarChart = function() {
             .style("fill", "#555")
             .style("font-size", "12px")
             .attr("transform", function(d, i) { 
-                return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.upper) - 5) + ")"; })
+	            if(d.upper) {
+		            return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.upper) - 5) + ")";
+	            } else {
+		            return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.score) - 5) + ")";
+	            }
+             })   
             .text(function(d) { return d.score.toFixed(1) });  
 			      
 	    bars.selectAll(".carrierText")
@@ -213,6 +224,12 @@ var rmBarChart = function() {
     chart.max = function(value) {
 	    if (!arguments.length) { return max; }
 	    max = value;
+	    return chart;
+    }
+    
+    chart.errorBars = function(value) {
+	    if (!arguments.length) { return errorBars; }
+	    errorBars = value;
 	    return chart;
     }
     

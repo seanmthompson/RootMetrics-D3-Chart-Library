@@ -25,11 +25,11 @@
 	    
 	    var dataSet = [
 		    {
-			    lower: 93.12,
+			    lower: 51.12,
 			    name: "AT&T",
 			    rank: 1,
 			    score: 93.423,
-			    upper: 99.123
+			    upper: 100.123
 		    },
 		    {
 			    lower: 91.12,
@@ -84,8 +84,8 @@
 	               {  
 	                  name:"AT&T",
 	                  score:1.78069406798489,
-	                  lower: 1.6891300388673,
-	                  upper: 1.84175793915168
+	                  lower: 0.6891300388673,
+	                  upper: 5.84175793915168
 	               },
 	               {  
 	                  name:"Sprint",
@@ -97,13 +97,19 @@
 	                  name:"T-Mobile",
 	                  score:1.14396986817326,
 	                  lower: 0.873619195734281,
-	                  upper: 1.20135984890568
+	                  upper: 1.50135984890568
 	               },
 	               {  
 	                  name:"Verizon",
 	                  score:0.716538572538573,
 	                  lower: 0.564386580759831,
 	                  upper: 0.902739835592091
+	               },
+	               {  
+	                  name:"Wi-Fi",
+	                  score:3.255240814440137,
+	                  lower: 3.208466763909148,
+	                  upper: 3.298036709134096
 	               }
 	        ],
 	        [  
@@ -130,6 +136,12 @@
 	                  score:0.255240814440137,
 	                  lower: 0.208466763909148,
 	                  upper: 0.298036709134096
+	               },
+	               {  
+	                  name:"Wi-Fi",
+	                  score:0.255240814440137,
+	                  lower: 0.208466763909148,
+	                  upper: 0.298036709134096
 	               }
 	        ]
         ]
@@ -145,7 +157,7 @@
 	    var donutChart = rmDonutChart().dataset(donutData).height(300).width(300);
 	    var donut = d3.select("#donutChart").call(donutChart);
 	    
-	    var doubleBarChart = rmDoubleBarChart().dataset(doubleChartData).height(500).width(500);
+	    var doubleBarChart = rmDoubleBarChart().dataset(doubleChartData).height(500).width(700);
 	    var doubleChart = d3.select("#doubleBar").call(doubleBarChart);
 					  
 	</script>

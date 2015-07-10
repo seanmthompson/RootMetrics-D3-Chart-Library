@@ -3,11 +3,16 @@ var rmDoubleBarChart = function() {
 	'use strict';
 		
 	var dataset,
+		svg,
 		height = 400,
 	 	width = 600,
 		margin = {top: 60, right: 40, bottom: 40, left: 40},
+		errorBars = true,
 		min = 0,
 		max,
+		yAxis,
+		barWidth,
+		recWidth,
 		animationComplete = false;
 		
 	var cwidth = width - margin.right - margin.left;
@@ -18,10 +23,11 @@ var rmDoubleBarChart = function() {
 		cwidth = width - margin.right - margin.left;
 		cheight = height - margin.top - margin.bottom;	
 		
-		selection.each(function(data) {
-			var div = d3.select(this),
-                svg = div.selectAll('svg').data([data]),
-                $div = $(div[0]);                          
+		selection.each(function(data) {			
+			var div = d3.select(this),                
+                $div = $(div[0]);      
+                
+            svg = div.selectAll('svg').data([data]);                        
                
             svg.enter().append('svg')
 	                   .call(chart.svgInit);    
@@ -38,26 +44,81 @@ var rmDoubleBarChart = function() {
 		});
 	}
 	
+	chart.update = function(data) {
+		dataset = data;
+		svg.call(chart.animate);
+	}
+	
 	chart.animate = function(svg) {
 		var barContent = svg.select('.bar-content');							
 		var bars = barContent.selectAll('.carrier-bar')[0];	
+		var scores = barContent.selectAll('.scoreText')[0];
+		var errorBottom = barContent.selectAll('.error-bar-bottom')[0];
+		var errorTop = barContent.selectAll('.error-bar-top')[0];
+		var errorBar = barContent.selectAll('.error-bar')[0];
 							
 		var counter = 0;
 
+		svg.select(".y.axis").call(yAxis);;
+
 		$.each(dataset, function(index, v) {
-			$.each(v, function(i, val) {				
+			var multiplier = recWidth * index;
+			
+			$.each(v, function(i, val) {																	
 				d3.select(bars[counter])
 					.transition()
-					.duration(750)
+					.duration(500)
 					.delay(function() { return 100 * counter})
-					.ease('elastic')				
+					.ease('exp-out') 				
 					.attr("y", function(d) { return y(val.score); })			        
 					.attr("height", function() { return cheight - y(val.score); })
 					
+				d3.select(scores[counter])
+					.transition()
+					.duration(500)
+					.delay(function() { return 100 * counter})
+					.ease('exp-out')
+					.attr("transform", function(d, iterator) { 
+		                return "translate(" + ((i * barWidth) + (barWidth/2) - (recWidth/2) + multiplier) + "," +  ((y(val.upper) - 7)) + ")"; 
+		            })
+		            .text(function(d) { return +val['score'].toFixed(1) });
+		        
+		        d3.select(errorBottom[counter])
+					.transition()
+					.duration(500)
+					.delay(function() { return 100 * counter})
+					.ease('exp-out')
+					.attr("transform", function(d, iterator) { 
+		                return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + y(val.lower) + ")"; 	
+		            }); 
+		            
+		        d3.select(errorTop[counter])
+					.transition()
+					.duration(500)
+					.delay(function() { return 100 * counter})
+					.ease('exp-out')
+					.attr("transform", function(d, iterator) { 
+		                return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + y(val.upper) + ")"; 	
+		            });
+		            
+		        d3.select(errorBar[counter])
+					.transition()
+					.duration(500)
+					.delay(function() { return 100 * counter})
+					.ease('exp-out')
+					.attr("transform", function(d, iterator) { 
+		                return "translate(" + ((i * barWidth) + (barWidth/2) - (recWidth/2) + multiplier) + "," + y(val.upper) + ")"; 	
+		            })
+		            .attr("height", function(d) {
+						var upperScale = y(val.upper);
+						var lowerScale = y(val.lower);
+						return  (lowerScale - upperScale);        
+					});		  
+															
 				counter++;	
 			});			
 		});							
-	};	
+	};
 	
 	chart.svgInit = function(svg) {
 		// Set the SVG size.
@@ -82,12 +143,12 @@ var rmDoubleBarChart = function() {
 		  	});
 		};  	
 						  	
-	  	var barWidth = cwidth / dataset[0].length;
-	  	var recWidth = barWidth / dataset[0].length;
+	  	barWidth = cwidth / dataset[0].length;
+	  	recWidth = barWidth / dataset[0].length;
 	  	
 	  	y = d3.scale.linear().domain([min, max]).range([cheight, 0]);
 
-		var yAxis = d3.svg.axis()
+		yAxis = d3.svg.axis()
 		    .scale(y)
 		    .orient("left")
 		    .ticks(10)
@@ -151,46 +212,43 @@ var rmDoubleBarChart = function() {
 			        .attr("transform", function(d, iterator) { 
 				      return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier)  + ",0)"; 
 				});
+
 				
-				bars.append("rect")
-					.attr("class", "error-bar")
-					.style("fill", "#555555")
-					.attr("width", 1)
-					.attr("transform", function(d, iterator) { 
-						var upperScale = y(val.upper);
-						var lowerScale = y(val.lower);
-						var difference = (upperScale - lowerScale) / 2;
-						return "translate(" + ((i * barWidth) + (barWidth/2) - (recWidth/2) + multiplier) + "," + (y(val.score) + difference) + ")"; })
-					.attr("height", function(d) {
-						var upperScale = y(val.upper);
-						var lowerScale = y(val.lower);
-						return  (lowerScale - upperScale);
-				});
-				
-				
-				// Upper error bar
-				bars.append("rect")
-					.attr("class", "error-bar-top")
-					.attr("height", 1)
-					.attr("width", recWidth/2)
-					.attr("transform", function(d, iterator) { 
-						var upperScale = y(val.upper);
-						var lowerScale = y(val.lower);
-						var difference = (upperScale - lowerScale) / 2;
-						return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + (y(val.score) + difference) + ")"; 						
-				});
-				
-				// Lower error bar
-				bars.append("rect")
-					.attr("class", "error-bar-bottom")
-					.attr("height", 1)
-					.attr("width", recWidth/2)
-					.attr("transform", function(d, iterator) { 
-						var upperScale = y(val.upper);
-						var lowerScale = y(val.lower);
-						var difference = (upperScale - lowerScale) / 2;
-						return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + (y(val.score) - difference) + ")"; 						
-				});
+				if(errorBars) {
+					bars.append("rect")
+						.attr("class", "error-bar")
+						.style("fill", "#555555")
+						.attr("width", 1)
+						.attr("transform", function(d, iterator) { 
+							var upperScale = y(val.upper);
+							return "translate(" + ((i * barWidth) + (barWidth/2) - (recWidth/2) + multiplier) + "," + cheight + ")"; })
+						.attr("height", function(d) {
+							var upperScale = y(val.upper);
+							var lowerScale = y(val.lower);
+							return  (lowerScale - upperScale);
+					});
+					
+					
+					// Upper error bar
+					bars.append("rect")
+						.attr("class", "error-bar-top")
+						.attr("height", 1)
+						.attr("width", recWidth/2)
+						.attr("transform", function(d, iterator) { 
+							var upperScale = y(val.upper);
+							return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + cheight + ")"; 						
+					});
+					
+					// Lower error bar
+					bars.append("rect")
+						.attr("class", "error-bar-bottom")
+						.attr("height", 1)
+						.attr("width", recWidth/2)
+						.attr("transform", function(d, iterator) { 
+							var lowerScale = y(val.lower);
+							return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + cheight + ")"; 						
+					});
+				}	
 				
 				bars.append("text")
 	                .attr("class", "scoreText")
@@ -200,10 +258,7 @@ var rmDoubleBarChart = function() {
 	                .style("font-size", "12px")
 	                .text(function(d) { return +val['score'].toFixed(1) })
 	                .attr("transform", function(d, iterator) { 
-		            	var upperScale = y(val.upper);
-						var lowerScale = y(val.lower);
-						var difference = (upperScale - lowerScale) / 2;
-		                return "translate(" + ((i * barWidth) + (barWidth/2) - (recWidth/2) + multiplier) + "," +  ((y(val.upper) - 7)) + ")"; 
+		                return "translate(" + ((i * barWidth) + (barWidth/2) - (recWidth/2) + multiplier) + "," +  cheight + ")"; 
 		        });
 	                 	
 				
@@ -241,6 +296,12 @@ var rmDoubleBarChart = function() {
     chart.max = function(value) {
 	    if (!arguments.length) { return max; }
 	    max = value;
+	    return chart;
+    }
+    
+    chart.errorBars = function(value) {
+	    if (!arguments.length) { return errorBars; }
+	    errorBars = value;
 	    return chart;
     }
     
