@@ -15,6 +15,7 @@
         <div id="donutChart"></div>
         <div id="doubleBar"></div>
         <div id="barGraph"></div>
+        <div id="hrBarGraph"></div>
     </div>
     <script src="src/vendor/jquery/dist/jquery.min.js"></script>
      <script src="src/vendor/d3/d3.min.js"></script>
@@ -144,11 +145,58 @@
 	                  upper: 0.298036709134096
 	               }
 	        ]
-        ]
+        ];
+        
+        var hrBarData = [
+	        [
+		       {  
+                  name:"AT&T",
+                  ties: 109,
+                  wins: 4
+               }, 
+               {  
+                  name:"Sprint",
+                  ties: 17,
+                  wins: 0
+               },
+               {  
+                  name:"T-Mobile",
+                  ties: 34,
+                  wins: 0
+               }, 
+               {  
+                  name:"Verizon",
+                  ties: 109,
+                  wins: 10
+               }, 
+	        ],
+	        [
+		       {  
+                  name:"AT&T",
+                  ties: 83,
+                  wins: 5
+               }, 
+               {  
+                  name:"Sprint",
+                  ties: 15,
+                  wins: 1
+               },
+               {  
+                  name:"T-Mobile",
+                  ties: 35,
+                  wins: 0
+               }, 
+               {  
+                  name:"Verizon",
+                  ties: 94,
+                  wins: 20
+               }, 
+	        ]
+        ];
 
 
 	    	    
-	    var barChart = rmBarChart().dataset(dataSet).width(600).height(300);	    
+	    var barChart = rmBarChart().dataset(dataSet).width(600).height(300).ranks(true);	    
 	    var chart = d3.select('#barGraph').call(barChart);		
 	    
 	    var scatterPlot = rmScatterPlot().dataset(scatterData).width(500).height(500);	  
@@ -159,6 +207,9 @@
 	    
 	    var doubleBarChart = rmDoubleBarChart().dataset(doubleChartData).height(500).width(700);
 	    var doubleChart = d3.select("#doubleBar").call(doubleBarChart);
+	    
+	    var hrDoubleBarChart = rmHrDoubleBarChart().dataset(hrBarData).width($("#hrBarGraph").width());
+	    var hrDoubleChart = d3.select("#hrBarGraph").call(hrDoubleBarChart);
 					  
 	</script>
 </body>

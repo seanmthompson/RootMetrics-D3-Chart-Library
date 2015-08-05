@@ -6,22 +6,25 @@ var rmBarChart = function() {
 		svg,
 		height = 400,
 	 	width = 600,
-		margin = {top: 40, right: 40, bottom: 40, left: 40},
+	 	ranks = false,
+		margin = {top: 40, right: 40, bottom: 60, left: 40},
 		min = 0,
 		max = 100,
+		barWidth,
+		recWidth,
 		errorBars = true,
+		cwidth,
+		cheight,
+		y,
 		animationComplete = false;
-	
-	var cwidth = width - margin.right - margin.left;
-	var cheight = height - margin.top - margin.bottom;
-	var y; //need the y axis globally available for animation and resize	
+
 	
 	function chart(selection) {
 		cwidth = width - margin.right - margin.left;
 		cheight = height - margin.top - margin.bottom;	
 		
-		selection.each(function(data) {			
-			var div = d3.select(this),                
+		selection.each(function(data) {									
+			var div = d3.select(this),               
                 $div = $(div[0]);      
                 
             svg = div.selectAll('svg').data([data]);                        
@@ -49,14 +52,98 @@ var rmBarChart = function() {
 	chart.animate = function(svg) {
 		var barContent = svg.select('.bar-content');							
 		var bars = barContent.selectAll('.carrier-bar');	
+		var scores = barContent.selectAll('.scoreText');
+		var ranks = barContent.selectAll('.rankText');
+		var rankCircles = barContent.selectAll('.rankCircle');
+		var errorBottom = barContent.selectAll('.error-bar-bottom');
+		var errorTop = barContent.selectAll('.error-bar-top');
+		var errorBar = barContent.selectAll('.error-bar');
+		var carrierText = barContent.selectAll('.carrierText');
 
 		bars.data(dataset)
+			.attr("class", function(d) { return d.name })
+			.classed('carrier-bar', true)
 			.transition()
-			.duration(750)
+			.duration(500)
 			.delay(function(d, i) { return 100 * i })
-			.ease('elastic')
-			.attr("height", function(d) { return cheight - y(d.score); })
-			.attr("y", function(d) { return y(d.score); })			
+			.ease('exp-out')
+			.attr("height", function(d) { return cheight - y(d.score); })			
+			.attr("y", function(d) { return y(d.score); })		
+		
+		carrierText.data(dataset)
+			.text(function(d){return d.name;});
+			
+		scores.data(dataset)
+			.transition()
+			.duration(500)
+			.delay(function(d, i) { return 100 * i})
+			.ease('exp-out')
+			.attr("transform", function(d, i) {
+				if(d.upper) {
+	            	return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.upper) - 5) + ")";
+            	} else {
+	            	return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.score) - 5) + ")";
+            	} 
+			})             
+            .text(function(d) { return d.score.toFixed(1) });
+            
+        errorBar.data(dataset)
+			.transition()
+			.duration(500)
+			.delay(function(d, i) { return 100 * i})
+			.ease('exp-out')
+			.attr("transform", function(d, i) {
+				var upperScale = y(d.upper);
+				return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + upperScale + ")"; 
+			})
+			.attr("height", function(d) {
+				var upperScale = y(d.upper);
+				var lowerScale = y(d.lower);
+				return  (lowerScale - upperScale);   
+			})
+            
+        errorBottom.data(dataset)
+			.transition()
+			.duration(500)
+			.delay(function(d, i) { return 100 * i})
+			.ease('exp-out')
+			.attr("transform", function(d, i) {
+				var lowerScale = y(d.lower);
+				return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + lowerScale + ")"; 
+			});					
+		
+		errorTop.data(dataset)
+			.transition()
+			.duration(500)
+			.delay(function(d, i) { return 100 * i})
+			.ease('exp-out')
+			.attr("transform", function(d, i) {
+				var upperScale = y(d.upper);
+				return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + upperScale + ")";
+			});		
+			
+		if(ranks) {
+	        rankCircles.data(dataset)
+                .attr('class', "rankCircle")
+                .attr("fill", function(d) {
+					if(d.rank == 1) {
+						return "#555555";
+					} else {
+						return "transparent";
+					}
+				})
+				.attr("stroke", function(d) {
+					if(d.rank == 1) {
+						return "#555555";
+					} else {
+						return "#999999";
+					}
+				});
+	        
+	    	ranks.data(dataset)           
+	             .text(function(d) { return d.rank });
+        }   	
+			             
 	};	
 	
 	chart.svgInit = function(svg) {
@@ -69,8 +156,8 @@ var rmBarChart = function() {
             .attr('transform', 'translate(' + [margin.left, margin.top] + ')');
 		
 		  	
-	  	var barWidth = cwidth / dataset.length;
-	  	var recWidth = barWidth / dataset.length;
+	  	barWidth = cwidth / dataset.length;
+	  	recWidth = barWidth / dataset.length;
 	  	
 	  	y = d3.scale.linear().domain([min, max]).range([cheight, 0]);
 
@@ -129,7 +216,7 @@ var rmBarChart = function() {
 				.attr("width", recWidth/2)
 				.attr("transform", function(d, i) { 
 					var upperScale = y(d.upper);
-					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + upperScale + ")"; 
+					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + cheight + ")"; 
 				})			
 			
 			bars.selectAll(".error-bar-bottom")
@@ -141,7 +228,7 @@ var rmBarChart = function() {
 				.attr("width", recWidth/2)
 				.attr("transform", function(d, i) {
 					var lowerScale = y(d.lower);
-					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + lowerScale + ")"; 
+					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + cheight + ")"; 
 				});
 				
 			bars.selectAll(".error-bar")
@@ -154,13 +241,9 @@ var rmBarChart = function() {
 					var upperScale = y(d.upper);
 					var lowerScale = y(d.lower);
 					var difference = (upperScale - lowerScale) / 2;
-					return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + upperScale + ")"; })
-				.attr("height", function(d) {
-					var upperScale = y(d.upper);
-					var lowerScale = y(d.lower);
-					return  (lowerScale - upperScale);
-			});	
-		};	
+					return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + cheight + ")"; })
+				.attr("height", 0);	
+		};			
 		
 		bars.selectAll(".scoreText")
             .data(dataset)
@@ -171,11 +254,7 @@ var rmBarChart = function() {
             .style("fill", "#555")
             .style("font-size", "12px")
             .attr("transform", function(d, i) { 
-	            if(d.upper) {
-		            return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.upper) - 5) + ")";
-	            } else {
-		            return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.score) - 5) + ")";
-	            }
+		        return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  cheight + ")"; 
              })   
             .text(function(d) { return d.score.toFixed(1) });  
 			      
@@ -189,9 +268,55 @@ var rmBarChart = function() {
             .attr("y", cheight + 20)
             .style("text-anchor", "middle")
             .attr("transform", function(d, i) { 
-				return "translate(" + (((i * barWidth)) + (barWidth /2 ))  + ", 0)";
+				return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; 
             })
             .text(function(d){return d.name;});
+            
+        if(ranks) {
+	        bars.selectAll(".rankCircle")
+                .data(dataset)
+                .enter()
+                .append("circle")
+                .attr('class', "rankCircle")
+                .attr("fill", function(d) {
+					if(d.rank == 1) {
+						return "#555555";
+					} else {
+						return "transparent";
+					}
+				})
+				.attr("stroke", function(d) {
+					if(d.rank == 1) {
+						return "#555555";
+					} else {
+						return "#999999";
+					}
+				})
+                .attr("stroke-width", "1px")
+                .attr("cy", cheight + 40)
+                .attr("r", 10)
+                .attr("transform", function(d, i) { return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; }) 	
+	        
+	    	bars.selectAll(".rankText")
+	            .data(dataset)
+	            .enter()
+	            .append("text")
+	            .style("font-size", "12px")
+	            .attr("class", "rankText")
+	            .style("fill", function(d) {
+					if(d.rank == 1) {
+						return "#FFFFFF";
+					} else {
+						return "#555555";
+					}
+				})
+	            .attr("y", cheight + 44)
+	            .style("text-anchor", "middle")
+	            .attr("transform", function(d, i) { 
+					return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; 
+	            })
+	            .text(function(d, i){ return d.rank; });
+        }    
 	}
 	
 	
@@ -230,6 +355,12 @@ var rmBarChart = function() {
     chart.errorBars = function(value) {
 	    if (!arguments.length) { return errorBars; }
 	    errorBars = value;
+	    return chart;
+    }
+    
+    chart.ranks = function(value) {
+	    if (!arguments.length) { return ranks; }
+	    ranks = value;
 	    return chart;
     }
     

@@ -205,7 +205,7 @@ var rmDoubleBarChart = function() {
 				bars.append("rect")
 				    .attr("class", function(d) { return val.name })
 				    .classed("carrier-bar", true)
-			        .style("opacity", function() { return index == 1 ? 0.5 : 1; })
+			        .style("opacity", function() { return index == 0 ? 0.5 : 1; })
 			        .attr("height", 0)
 					.attr("y", function(d) { return cheight; }) 
 			        .attr("width", recWidth)

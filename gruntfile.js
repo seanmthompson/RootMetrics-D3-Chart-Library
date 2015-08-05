@@ -13,10 +13,12 @@ module.exports = function(grunt){
 				files: {
 					'dist/js/rm-chart-library.min.js': [
 						'src/vendor/jquery.inview2/jquery.inview2.modified.js',
+						'src/vendor/ease/ease.js',
 						'src/js/rm-bar-chart.js',
 						'src/js/rm-donut-chart.js',
 						'src/js/rm-scatter-plot.js',
 						'src/js/rm-double-bar-chart.js',
+						'src/js/rm-hr-double-bar-chart.js'
 					]
 				}
 			}
