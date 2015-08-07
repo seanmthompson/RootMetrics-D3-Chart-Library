@@ -1,4 +1,6 @@
-var rmBarChart = function() {
+var rmHrBarChart = function() {
+	
+	debugger;
 	
 	'use strict';
 		
@@ -7,28 +9,30 @@ var rmBarChart = function() {
 		height = 400,
 	 	width = 600,
 	 	ranks = false,
-		margin = {top: 40, right: 40, bottom: 60, left: 40},
-		min = 0,
-		max = 100,
-		barWidth,
-		recWidth,
+		margin = {top: 20, right: 20, bottom: 20, left: 20},
 		errorBars = true,
+		min = 0,
+		max = 0,
+		xAxis,
+		barWidth,
+		barHeight = 30,
+		barPadding = 50,
 		cwidth,
 		cheight,
+		x,
 		y,
 		animationComplete = false;
-
 	
 	function chart(selection) {
 		cwidth = width - margin.right - margin.left;
 		cheight = height - margin.top - margin.bottom;	
 		
-		selection.each(function(data) {									
-			var div = d3.select(this),               
+		selection.each(function(data) {			
+			var div = d3.select(this),                
                 $div = $(div[0]);      
                 
             svg = div.selectAll('svg').data([data]);                        
-               
+                              
             svg.enter().append('svg')
 	                   .call(chart.svgInit);    
                                                                                 
@@ -37,7 +41,7 @@ var rmBarChart = function() {
 			  if (isInView) {
 			    if(!animationComplete) {
 				    animationComplete = true;
-				 	svg.call(chart.animate); 
+				 	svg.call(chart.animate);
 			    }				  	
 			  }
 			});                                                			
@@ -59,7 +63,7 @@ var rmBarChart = function() {
 		var errorTop = barContent.selectAll('.error-bar-top');
 		var errorBar = barContent.selectAll('.error-bar');
 		var carrierText = barContent.selectAll('.carrierText');
-
+		
 		bars.data(dataset)
 			.attr("class", function(d) { return d.name })
 			.classed('carrier-bar', true)
@@ -67,8 +71,7 @@ var rmBarChart = function() {
 			.duration(500)
 			.delay(function(d, i) { return 100 * i })
 			.ease('exp-out')
-			.attr("height", function(d) { return cheight - y(d.score); })			
-			.attr("y", function(d) { return y(d.score); })		
+			.attr("width", function(d) { return x(d.score); })			
 		
 		carrierText.data(dataset)
 			.text(function(d){return d.name;});
@@ -78,13 +81,7 @@ var rmBarChart = function() {
 			.duration(500)
 			.delay(function(d, i) { return 100 * i})
 			.ease('exp-out')
-			.attr("transform", function(d, i) {
-				if(d.upper) {
-	            	return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.upper) - 5) + ")";
-            	} else {
-	            	return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.score) - 5) + ")";
-            	} 
-			})             
+			.attr("x", cwidth)            
             .text(function(d) { return d.score.toFixed(1) });
             
         errorBar.data(dataset)
@@ -93,13 +90,13 @@ var rmBarChart = function() {
 			.delay(function(d, i) { return 100 * i})
 			.ease('exp-out')
 			.attr("transform", function(d, i) {
-				var upperScale = y(d.upper);
-				return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + upperScale + ")"; 
+				var lowerScale = x(d.lower);
+				return "translate(" + (lowerScale + 90) + "," + (i * (barHeight + barPadding)) + ")";   
 			})
-			.attr("height", function(d) {
-				var upperScale = y(d.upper);
-				var lowerScale = y(d.lower);
-				return  (lowerScale - upperScale);   
+			.attr("width", function(d) {
+				var upperScale = x(d.upper);
+				var lowerScale = x(d.lower);
+				return  (upperScale - lowerScale);   
 			})
             
         errorBottom.data(dataset)
@@ -108,8 +105,8 @@ var rmBarChart = function() {
 			.delay(function(d, i) { return 100 * i})
 			.ease('exp-out')
 			.attr("transform", function(d, i) {
-				var lowerScale = y(d.lower);
-				return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + lowerScale + ")"; 
+				var lowerScale = x(d.lower);
+				return "translate(" + (lowerScale + 90) + "," + (i * (barHeight + barPadding) - (barHeight/4)) + ")";  
 			});					
 		
 		errorTop.data(dataset)
@@ -118,8 +115,8 @@ var rmBarChart = function() {
 			.delay(function(d, i) { return 100 * i})
 			.ease('exp-out')
 			.attr("transform", function(d, i) {
-				var upperScale = y(d.upper);
-				return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + upperScale + ")";
+				var upperScale = x(d.upper);
+				return "translate(" + (upperScale + 90) + "," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
 			});		
 			
 		if(ranks) {
@@ -142,54 +139,38 @@ var rmBarChart = function() {
 	        
 	    	ranks.data(dataset)           
 	             .text(function(d) { return d.rank });
-        }   	
-			             
-	};	
+        }   
+	};
 	
 	chart.svgInit = function(svg) {
+		height = dataset.length * (barHeight + barPadding) + margin.top + margin.bottom;
+		barWidth = cwidth / dataset.length;
+	  	recWidth = barWidth / dataset.length;
+	  			
 		// Set the SVG size.
         svg.attr('width', width)
            .attr('height', height);
 
+        // Append a container group and translate it to consider the margins.
         var g = svg.append('g')
             .attr('class', 'chart-content')
-            .attr('transform', 'translate(' + [margin.left, margin.top] + ')');
-		
-		  	
-	  	barWidth = cwidth / dataset.length;
-	  	recWidth = barWidth / dataset.length;
-	  	
-	  	y = d3.scale.linear().domain([min, max]).range([cheight, 0]);
-
-		var yAxis = d3.svg.axis()
-		    .scale(y)
-		    .orient("left")
-		    .ticks(10)
-		    .tickPadding(10)
-		    .tickSize(-cwidth);	
+           .attr('transform', 'translate(' + [margin.left, margin.top] + ')');
 				
-			g.append("g")
-		    .attr("class", "y axis")
+					        
+        $.each(dataset, function(index, v) {
+			var higher = v.upper;
+			max = higher > max ? higher : max;
+        });
+        
+                
+		y = d3.scale.ordinal()
+				.domain([0, max])
+				.rangeBands([0, cwidth]);
 
-			g.select(".y.axis").call(yAxis);
-			
+		x = d3.scale.linear()
+				.domain([min, max])
+				.range([0, (cwidth - margin.right - margin.left - 75)]);						        
 		
-		var xAxis = g.append("g")
-		    .attr("class", "x axis")
-		    .attr('transform', 'translate(' + [barWidth, 0] + ')');
-		
-		xAxis.selectAll(".xaxis")
-			.data(dataset)
-			.enter()
-			.append("line")
-			.attr("class", "xaxis")
-			.attr("transform", function(d,i) {
-				return "translate(" + ((i * barWidth) ) + ", 0)"
-			})
-			.attr("x1", 0)					
-			.attr("x2", 0)
-			.attr("y1", 0)	
-			.attr("y2", cheight);					
 		
 		var bars = g.append('g')
 			.attr('class', 'bar-content');
@@ -200,11 +181,10 @@ var rmBarChart = function() {
 			.append("rect")
 			.attr("class", function(d) { return d.name })
 			.classed('carrier-bar', true)
-			.attr("height", 0)
-			.attr("y", function(d) { return cheight; })   											
-			.attr("width", recWidth)
-			.attr("transform", function(d, i) { return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth/2) + ",0)"; });
-			
+			.attr("height", barHeight)
+			.attr("y", function(d, i) { return (i * (barHeight + barPadding)- (barHeight/2)) }) 
+			.attr("x", 90)			        				
+	        .attr("width", 0);
 			
 		if(errorBars) { 
 			bars.selectAll(".error-bar-top")
@@ -212,32 +192,34 @@ var rmBarChart = function() {
 				.enter()
 				.append("rect")
 				.attr("class", "error-bar-top")
-				.attr("height", 1)
-				.attr("width", recWidth/2)
+				.attr("width", 1)
+				.attr("height", barHeight/2)
 				.attr("transform", function(d, i) { 
-					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + cheight + ")"; 
-				})			
+					return "translate(0," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
+				});			
 			
 			bars.selectAll(".error-bar-bottom")
 				.data(dataset)
 				.enter()
 				.append("rect")
 				.attr("class", "error-bar-bottom")
-				.attr("height", 1)
-				.attr("width", recWidth/2)
-				.attr("transform", function(d, i) {
-					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + cheight + ")"; 
+				.attr("width", 1)
+				.attr("height", barHeight/2)
+				.attr("transform", function(d, i) { 
+					return "translate(0," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
 				});
+				
 				
 			bars.selectAll(".error-bar")
 				.data(dataset)
 				.enter()
 				.append("rect")
 				.attr("class", "error-bar")
-				.attr("width", 1)
+				.attr("height", 1)
 				.attr("transform", function(d, i) { 
-					return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + cheight + ")"; })
-				.attr("height", 0);	
+					return "translate(0," + (i * (barHeight + barPadding)) + ")";
+				})			  	
+				.attr("width", 0);
 		};			
 		
 		bars.selectAll(".scoreText")
@@ -245,34 +227,35 @@ var rmBarChart = function() {
             .enter()
             .append("text")
             .attr("class", "scoreText")
-            .attr("text-anchor", "middle")
+            .attr("text-anchor", "end")
             .style("fill", "#555")
             .style("font-size", "12px")
-            .attr("transform", function(d, i) { 
-		        return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  cheight + ")"; 
-             })   
+            .attr("y", function(d, i){
+                return i * (barHeight + barPadding) + 4;
+            })
+            .attr("x", 0)  
             .text(function(d) { return d.score.toFixed(1) });  
-			      
-	    bars.selectAll(".carrierText")
+            
+            
+        bars.selectAll(".carrierText")
             .data(dataset)
             .enter()
             .append("text")
             .style("font-size", "12px")
             .attr("class", "carrierText")
             .style("fill", "#555555")
-            .attr("y", cheight + 20)
-            .style("text-anchor", "middle")
-            .attr("transform", function(d, i) { 
-				return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; 
+            .attr("y", function(d, i){
+                return i * (barHeight + barPadding) + 4;
             })
-            .text(function(d){return d.name;});
+            .attr("x", 28)
+            .text(function(d){return d.name;});    
+
             
         if(ranks) {
 	        bars.selectAll(".rankCircle")
                 .data(dataset)
                 .enter()
                 .append("circle")
-                .attr('class', "rankCircle")
                 .attr("fill", function(d) {
 					if(d.rank == 1) {
 						return "#555555";
@@ -288,43 +271,39 @@ var rmBarChart = function() {
 					}
 				})
                 .attr("stroke-width", "1px")
-                .attr("cy", cheight + 40)
                 .attr("r", 10)
-                .attr("transform", function(d, i) { return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; }) 	
-	        
-	    	bars.selectAll(".rankText")
-	            .data(dataset)
-	            .enter()
-	            .append("text")
-	            .style("font-size", "12px")
-	            .attr("class", "rankText")
-	            .style("fill", function(d) {
+                .attr("cx", 11)
+                .attr("cy", function(d, i){
+                    return i * (barHeight + barPadding);
+                });
+                
+            bars.selectAll(".rankText")
+                .data(dataset)
+                .enter()
+                .append("text")
+                .style("font-size", "12px")
+                .attr("class", "rankText")
+                .attr("x", 11)
+                .style("fill", function(d) {
 					if(d.rank == 1) {
 						return "#FFFFFF";
 					} else {
 						return "#555555";
 					}
 				})
-	            .attr("y", cheight + 44)
-	            .style("text-anchor", "middle")
-	            .attr("transform", function(d, i) { 
-					return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; 
-	            })
-	            .text(function(d, i){ return d.rank; });
-        }    
+                .attr("text-anchor", "middle")
+                .attr("y", function(d, i) {
+                    return i * (barHeight + barPadding) + 5;
+                })
+                .text(function(d) { return d.rank;})    	
+        } 
+		
 	}
 	
 	
 	chart.width = function(value) {
         if (!arguments.length) { return width; }
         width = value;
-        return chart;
-    };
-
-    // Height Accessor
-    chart.height = function(value) {
-        if (!arguments.length) { return height; }
-        height = value;
         return chart;
     };
 
@@ -350,6 +329,18 @@ var rmBarChart = function() {
     chart.errorBars = function(value) {
 	    if (!arguments.length) { return errorBars; }
 	    errorBars = value;
+	    return chart;
+    }
+    
+    chart.barHeight = function(value) {
+	    if (!arguments.length) { return barHeight; }
+	    barHeight = value;
+	    return chart;
+    }
+    
+    chart.barPadding = function(value) {
+	    if (!arguments.length) { return barPadding; }
+	    barPadding = value;
 	    return chart;
     }
     

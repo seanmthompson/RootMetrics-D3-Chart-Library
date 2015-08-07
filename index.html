@@ -15,6 +15,7 @@
         <div id="donutChart"></div>
         <div id="doubleBar"></div>
         <div id="barGraph"></div>
+        <div id="hrDoubleBarGraph"></div>
         <div id="hrBarGraph"></div>
     </div>
     <script src="src/vendor/jquery/dist/jquery.min.js"></script>
@@ -208,8 +209,11 @@
 	    var doubleBarChart = rmDoubleBarChart().dataset(doubleChartData).height(500).width(700);
 	    var doubleChart = d3.select("#doubleBar").call(doubleBarChart);
 	    
-	    var hrDoubleBarChart = rmHrDoubleBarChart().dataset(hrBarData).width($("#hrBarGraph").width());
-	    var hrDoubleChart = d3.select("#hrBarGraph").call(hrDoubleBarChart);
+	    var hrDoubleBarChart = rmHrDoubleBarChart().dataset(hrBarData).width($("#hrDoubleBarGraph").width());
+	    var hrDoubleChart = d3.select("#hrDoubleBarGraph").call(hrDoubleBarChart);
+	   
+	    var hrBarChart = rmHrBarChart().dataset(dataSet).width($("#hrBarGraph").width()).margin({ right: 30, left: 30, top: 30, bottom: 30 }).ranks(true);
+	    var hrChart = d3.select("#hrBarGraph").call(hrBarChart);
 					  
 	</script>
 </body>
