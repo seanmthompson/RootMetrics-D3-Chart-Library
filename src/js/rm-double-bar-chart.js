@@ -216,9 +216,9 @@ var rmDoubleBarChart = function() {
 				
 				if(errorBars) {
 					bars.append("rect")
-						.attr("class", "error-bar")
-						.style("fill", "#555555")
-						.attr("width", 1)
+						.attr("class", function(d) { return val.name  })
+						.classed("error-bar secondary", true)
+						.attr("width", 2)
 						.attr("transform", function(d, iterator) { 
 							var upperScale = y(val.upper);
 							return "translate(" + ((i * barWidth) + (barWidth/2) - (recWidth/2) + multiplier) + "," + cheight + ")"; })
@@ -237,7 +237,8 @@ var rmDoubleBarChart = function() {
 						.attr("transform", function(d, iterator) { 
 							var upperScale = y(val.upper);
 							return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + cheight + ")"; 						
-					});
+					})
+					.style('display', 'none');
 					
 					// Lower error bar
 					bars.append("rect")
@@ -247,7 +248,8 @@ var rmDoubleBarChart = function() {
 						.attr("transform", function(d, iterator) { 
 							var lowerScale = y(val.lower);
 							return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth + multiplier + (recWidth/v.length)) + "," + cheight + ")"; 						
-					});
+					})
+					.style('display', 'none');
 				}	
 				
 				bars.append("text")

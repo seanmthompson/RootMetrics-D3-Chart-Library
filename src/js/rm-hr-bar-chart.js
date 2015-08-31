@@ -196,7 +196,8 @@ var rmHrBarChart = function() {
 				.attr("height", barHeight/2)
 				.attr("transform", function(d, i) { 
 					return "translate(0," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
-				});			
+				})
+				.style('display', 'none');		
 			
 			bars.selectAll(".error-bar-bottom")
 				.data(dataset)
@@ -207,15 +208,17 @@ var rmHrBarChart = function() {
 				.attr("height", barHeight/2)
 				.attr("transform", function(d, i) { 
 					return "translate(0," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
-				});
+				})
+				.style('display', 'none');	
 				
 				
 			bars.selectAll(".error-bar")
 				.data(dataset)
 				.enter()
 				.append("rect")
-				.attr("class", "error-bar")
-				.attr("height", 1)
+				.attr("class", function(d) { return d.name })
+				.classed("error-bar secondary", true)
+				.attr("height", 2)
 				.attr("transform", function(d, i) { 
 					return "translate(0," + (i * (barHeight + barPadding)) + ")";
 				})			  	
