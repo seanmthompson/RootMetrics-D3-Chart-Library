@@ -157,7 +157,7 @@ var rmBarChart = function() {
 		
 		  	
 	  	barWidth = cwidth / dataset.length;
-	  	recWidth = barWidth / dataset.length;
+	  	recWidth = barWidth / 2;
 	  	
 	  	y = d3.scale.linear().domain([min, max]).range([cheight, 0]);
 
@@ -216,7 +216,8 @@ var rmBarChart = function() {
 				.attr("width", recWidth/2)
 				.attr("transform", function(d, i) { 
 					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + cheight + ")"; 
-				})			
+				})
+				.style('display', 'none');			
 			
 			bars.selectAll(".error-bar-bottom")
 				.data(dataset)
@@ -227,14 +228,16 @@ var rmBarChart = function() {
 				.attr("width", recWidth/2)
 				.attr("transform", function(d, i) {
 					return "translate(" + ((barWidth*i) + (barWidth/2) - (recWidth/4)) + "," + cheight + ")"; 
-				});
+				})
+				.style('display', 'none');
 				
 			bars.selectAll(".error-bar")
 				.data(dataset)
 				.enter()
 				.append("rect")
-				.attr("class", "error-bar")
-				.attr("width", 1)
+				.attr("class", function(d) { return d.name })
+				.classed("error-bar secondary", true)
+				.attr("width", 2)
 				.attr("transform", function(d, i) { 
 					return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + cheight + ")"; })
 				.attr("height", 0);	

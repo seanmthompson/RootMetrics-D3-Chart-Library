@@ -7,6 +7,13 @@
 @tmobile-base-color: #d45da0;
 @verizon-base-color: #ca5b59;
 
+@att-secondary-color: #AAC9D9;
+@cricket-secondary-color: #439474;
+@metropcs-secondary-color: #6764b3;
+@sprint-secondary-color: #F4D9A1;
+@tmobile-secondary-color: #E9AECF;
+@verizon-secondary-color: #E4ADAC;
+
 //us hover colors
 @att-hover-color: lighten(@att-base-color, 10%);
 @cricket-hover-color: lighten(@cricket-base-color, 10%);
@@ -45,6 +52,7 @@
 @tie-base-color: #999;
 @tie-hover-color: lighten(@tie-base-color, 10%);
 @wifi-base-color: #555;
+@wifi-secondary-color: #999;
 
 .att, .at\&t, .AT\&T {
     background: @att-base-color;
@@ -62,6 +70,24 @@
 .sprint, .Sprint {
     background: @sprint-base-color;
     fill: @sprint-base-color;
+}
+
+.att.secondary, .at\&t.secondary, .AT\&T.secondary {
+    background: @att-secondary-color;
+    fill: @att-secondary-color;
+}
+
+.verizon.secondary, .Verizon.secondary {
+    background: @verizon-secondary-color;
+    fill: @verizon-secondary-color;
+}
+.tmobile.secondary, .t-mobile.secondary, .T-Mobile.secondary {
+    background: @tmobile-secondary-color;
+    fill: @tmobile-secondary-color;
+}
+.sprint.secondary, .Sprint.secondary {
+    background: @sprint-secondary-color;
+    fill: @sprint-secondary-color;
 }
 
 .cricket, .Cricket {
@@ -125,6 +151,11 @@
 .wi-fi, .Wi-Fi, .WiFi, Wifi {
 	background: @wifi-base-color;
 	fill: @wifi-base-color;
+}
+
+.wi-fi.secondary, .Wi-Fi.secondary, .WiFi.secondary, Wifi.secondary {
+	background: @wifi-secondary-color;
+	fill: @wifi-secondary-color;
 }
 
 
