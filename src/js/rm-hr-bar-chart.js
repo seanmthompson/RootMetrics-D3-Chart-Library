@@ -88,6 +88,8 @@ var rmHrBarChart = function() {
 			.transition()
 			.duration(500)
 			.delay(function(d, i) { return 100 * i})
+			.attr("class", function(d) { return d.name })
+			.classed("error-bar secondary", true)
 			.ease('exp-out')
 			.attr("transform", function(d, i) {
 				var lowerScale = x(d.lower);
