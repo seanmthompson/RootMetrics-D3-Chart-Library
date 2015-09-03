@@ -88,6 +88,8 @@ var rmBarChart = function() {
             .text(function(d) { return d.score.toFixed(1) });
             
         errorBar.data(dataset)
+        	.attr("class", function(d) { return d.name })
+			.classed("error-bar secondary", true)
 			.transition()
 			.duration(500)
 			.delay(function(d, i) { return 100 * i})
@@ -125,14 +127,14 @@ var rmBarChart = function() {
 		if(ranks) {
 	        rankCircles.data(dataset)
                 .attr('class', "rankCircle")
-                .attr("fill", function(d) {
+                .style("fill", function(d) {
 					if(d.rank == 1) {
 						return "#555555";
 					} else {
 						return "transparent";
 					}
 				})
-				.attr("stroke", function(d) {
+				.style("stroke", function(d) {
 					if(d.rank == 1) {
 						return "#555555";
 					} else {
