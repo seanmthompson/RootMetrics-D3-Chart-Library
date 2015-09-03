@@ -124,14 +124,14 @@ var rmHrBarChart = function() {
 		if(ranks) {
 	        rankCircles.data(dataset)
                 .attr('class', "rankCircle")
-                .attr("fill", function(d) {
+                .style("fill", function(d) {
 					if(d.rank == 1) {
 						return "#555555";
 					} else {
 						return "transparent";
 					}
 				})
-				.attr("stroke", function(d) {
+				.style("stroke", function(d) {
 					if(d.rank == 1) {
 						return "#555555";
 					} else {
@@ -139,7 +139,14 @@ var rmHrBarChart = function() {
 					}
 				});
 	        
-	    	ranks.data(dataset)           
+	    	ranks.data(dataset) 
+	    		 .style("fill", function(d) {
+					if(d.rank == 1) {
+						return "#FFFFFF";
+					} else {
+						return "#555555";
+					}
+				 })          
 	             .text(function(d) { return d.rank });
         }   
 	};
@@ -261,14 +268,15 @@ var rmHrBarChart = function() {
                 .data(dataset)
                 .enter()
                 .append("circle")
-                .attr("fill", function(d) {
+                .attr("class", "rankCircle")
+                .style("fill", function(d) {
 					if(d.rank == 1) {
 						return "#555555";
 					} else {
 						return "transparent";
 					}
 				})
-				.attr("stroke", function(d) {
+				.style("stroke", function(d) {
 					if(d.rank == 1) {
 						return "#555555";
 					} else {
