@@ -59,7 +59,7 @@ var rmDoubleBarChart = function() {
 							
 		var counter = 0;
 
-		svg.select(".y.axis").call(yAxis);;
+		svg.select(".y.axis").call(yAxis);
 
 		$.each(dataset, function(index, v) {
 			var multiplier = recWidth * index;
