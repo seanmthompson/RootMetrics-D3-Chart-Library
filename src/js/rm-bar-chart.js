@@ -167,7 +167,7 @@ var rmBarChart = function() {
 	  	
 	  	y = d3.scale.linear().domain([min, max]).range([cheight, 0]);
 
-		var yAxis = d3.svg.axis()
+		yAxis = d3.svg.axis()
 		    .scale(y)
 		    .orient("left")
 		    .ticks(10)
