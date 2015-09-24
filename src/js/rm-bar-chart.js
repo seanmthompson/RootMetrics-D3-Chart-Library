@@ -50,7 +50,7 @@ var rmBarChart = function() {
 		svg.call(chart.animate);
 	}
 	
-	chart.animate = function(svg) {
+	chart.animate = function(svg) {		
 		var barContent = svg.select('.bar-content');							
 		var bars = barContent.selectAll('.carrier-bar');	
 		var scores = barContent.selectAll('.scoreText');
@@ -61,9 +61,11 @@ var rmBarChart = function() {
 		var errorBar = barContent.selectAll('.error-bar');
 		var carrierText = barContent.selectAll('.carrierText');
 
-		y.domain([min, d3.extent(dataset, function(d) { return d.upper; })]);
-		svg.select(".y.axis").call(yAxis);
+		var upperMax = d3.extent(dataset, function(d) { return d.upper; })[1];
 
+		y.domain([min, upperMax]);
+		svg.select(".y.axis").transition().duration(500).call(yAxis);
+		
 		bars.data(dataset)
 			.attr("class", function(d) { return d.name })
 			.classed('carrier-bar', true)
