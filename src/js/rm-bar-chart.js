@@ -62,7 +62,7 @@ var rmBarChart = function() {
 		var carrierText = barContent.selectAll('.carrierText');
 
 		y.domain([min, d3.extent(dataset, function(d) { return d.upper; })]).range([cheight, 0]);
-		svg.select(".y.axis").duration(500).call(yAxis);
+		svg.select(".y.axis").call(yAxis);
 
 		bars.data(dataset)
 			.attr("class", function(d) { return d.name })
