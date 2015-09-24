@@ -16,6 +16,7 @@ var rmBarChart = function() {
 		cwidth,
 		cheight,
 		y,
+		yAxis,
 		animationComplete = false;
 
 	
@@ -59,6 +60,8 @@ var rmBarChart = function() {
 		var errorTop = barContent.selectAll('.error-bar-top');
 		var errorBar = barContent.selectAll('.error-bar');
 		var carrierText = barContent.selectAll('.carrierText');
+
+		svg.select(".y.axis").call(yAxis);
 
 		bars.data(dataset)
 			.attr("class", function(d) { return d.name })
