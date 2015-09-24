@@ -61,7 +61,8 @@ var rmBarChart = function() {
 		var errorBar = barContent.selectAll('.error-bar');
 		var carrierText = barContent.selectAll('.carrierText');
 
-		svg.select(".y.axis").call(yAxis);
+		y.domain([min, d3.extent(dataset, function(d) { return d.upper; })]).range([cheight, 0]);
+		svg.select(".y.axis").duration(500).call(yAxis);
 
 		bars.data(dataset)
 			.attr("class", function(d) { return d.name })
