@@ -17,6 +17,9 @@
         <div id="barGraph"></div>
         <div id="hrDoubleBarGraph"></div>
         <div id="hrBarGraph"></div>
+        
+        <h2>Bar Chart with Threshold</h2>
+        <div id="hrBarGraphThreshold"></div>
     </div>
     <script src="src/vendor/jquery/dist/jquery.min.js"></script>
      <script src="src/vendor/d3/d3.min.js"></script>
@@ -202,6 +205,44 @@
 	        ]
         ];
 
+			    
+	    var dataSet2 = [
+		    {
+			    lower: 51.12,
+			    name: "AT&T",
+			    rank: 1,
+			    score: 93.423,
+			    upper: 100.123
+		    },
+		    {
+			    lower: 91.12,
+			    name: "Verizon",
+			    rank: 2,
+			    score: 92.423,
+			    upper: 97.123
+		    },
+		    {
+			    lower: 90.12,
+			    name: "Sprint",
+			    rank: 3,
+			    score: 91.423,
+			    upper: 95.123
+		    },
+		    {
+			    lower: 85.12,
+			    name: "T-Mobile",
+			    rank: 4,
+			    score: 89.423,
+			    upper: 93.123
+		    },
+		    {
+			    lower: 0,
+			    name: "Wi-Fi",
+			    rank: 4,
+			    score: 0,
+			    upper: 0
+		    }
+	    ];
 
 	    	    
 	    var barChart = rmBarChart().dataset(dataSet).width(600).height(300).ranks(true);	    
@@ -221,6 +262,9 @@
 	   
 	    var hrBarChart = rmHrBarChart().dataset(dataSet).width($("#hrBarGraph").width()).margin({ right: 30, left: 30, top: 30, bottom: 30 }).ranks(true);
 	    var hrChart = d3.select("#hrBarGraph").call(hrBarChart);
+	    
+	    var hrBarChart = rmHrBarChart().dataset(dataSet2).width($("#hrBarGraphThreshold").width()).margin({ right: 30, left: 30, top: 30, bottom: 30 }).ranks(true).threshold(true);
+	    var hrChart = d3.select("#hrBarGraphThreshold").call(hrBarChart);
 					  
 	</script>
 </body>

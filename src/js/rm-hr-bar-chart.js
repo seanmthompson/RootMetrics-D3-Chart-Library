@@ -13,6 +13,7 @@ var rmHrBarChart = function() {
 		errorBars = true,
 		min = 0,
 		max = 0,
+		threshold = false,
 		xAxis,
 		barWidth,
 		barHeight = 30,
@@ -36,7 +37,6 @@ var rmHrBarChart = function() {
             svg.enter().append('svg')
 	                   .call(chart.svgInit);    
                                                                                 
-			// div.node() converts d3 selection to jquery selection for plugin use
 			$div.bind('inview', function(event, isInView) {
 			  if (isInView) {
 			    if(!animationComplete) {
@@ -59,8 +59,6 @@ var rmHrBarChart = function() {
 		var scores = barContent.selectAll('.scoreText');
 		var ranks = barContent.selectAll('.rankText');
 		var rankCircles = barContent.selectAll('.rankCircle');
-		var errorBottom = barContent.selectAll('.error-bar-bottom');
-		var errorTop = barContent.selectAll('.error-bar-top');
 		var errorBar = barContent.selectAll('.error-bar');
 		var carrierText = barContent.selectAll('.carrierText');
 		
@@ -82,7 +80,14 @@ var rmHrBarChart = function() {
 			.delay(function(d, i) { return 100 * i})
 			.ease('exp-out')
 			.attr("x", cwidth)            
-            .text(function(d) { return d.score.toFixed(1) });
+            .text(function(d) { 
+	            if(threshold && d.score.toFixed(1) <= 0) {
+		            console.log('test');
+					return "*";
+				} else {
+					return d.score.toFixed(1) 	
+				}	            
+	        });
             
         errorBar.data(dataset)
 	        .attr("class", function(d) { return d.name })
@@ -99,27 +104,7 @@ var rmHrBarChart = function() {
 				var upperScale = x(d.upper);
 				var lowerScale = x(d.lower);
 				return  (upperScale - lowerScale);   
-			})
-            
-        errorBottom.data(dataset)
-			.transition()
-			.duration(500)
-			.delay(function(d, i) { return 100 * i})
-			.ease('exp-out')
-			.attr("transform", function(d, i) {
-				var lowerScale = x(d.lower);
-				return "translate(" + (lowerScale + 90) + "," + (i * (barHeight + barPadding) - (barHeight/4)) + ")";  
-			});					
-		
-		errorTop.data(dataset)
-			.transition()
-			.duration(500)
-			.delay(function(d, i) { return 100 * i})
-			.ease('exp-out')
-			.attr("transform", function(d, i) {
-				var upperScale = x(d.upper);
-				return "translate(" + (upperScale + 90) + "," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
-			});		
+			});	
 			
 		if(ranks) {
 	        rankCircles.data(dataset)
@@ -147,7 +132,13 @@ var rmHrBarChart = function() {
 						return "#555555";
 					}
 				 })          
-	             .text(function(d) { return d.rank });
+	             .text(function(d) { 
+		            if(threshold && d.score.toFixed(1) <= 0) {
+						return "";
+					} else {
+						return d.rank;	
+					}	            
+		        });
         }   
 	};
 	
@@ -195,32 +186,7 @@ var rmHrBarChart = function() {
 			.attr("x", 90)			        				
 	        .attr("width", 0);
 			
-		if(errorBars) { 
-			bars.selectAll(".error-bar-top")
-				.data(dataset)
-				.enter()
-				.append("rect")
-				.attr("class", "error-bar-top")
-				.attr("width", 1)
-				.attr("height", barHeight/2)
-				.attr("transform", function(d, i) { 
-					return "translate(0," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
-				})
-				.style('display', 'none');		
-			
-			bars.selectAll(".error-bar-bottom")
-				.data(dataset)
-				.enter()
-				.append("rect")
-				.attr("class", "error-bar-bottom")
-				.attr("width", 1)
-				.attr("height", barHeight/2)
-				.attr("transform", function(d, i) { 
-					return "translate(0," + (i * (barHeight + barPadding) - (barHeight/4)) + ")"; 
-				})
-				.style('display', 'none');	
-				
-				
+		if(errorBars) { 			
 			bars.selectAll(".error-bar")
 				.data(dataset)
 				.enter()
@@ -233,7 +199,7 @@ var rmHrBarChart = function() {
 				})			  	
 				.attr("width", 0);
 		};			
-		
+				
 		bars.selectAll(".scoreText")
             .data(dataset)
             .enter()
@@ -246,7 +212,13 @@ var rmHrBarChart = function() {
                 return i * (barHeight + barPadding) + 4;
             })
             .attr("x", 0)  
-            .text(function(d) { return d.score.toFixed(1) });  
+            .text(function(d) { 
+	            if(threshold && d.score.toFixed(1) <= 0) {
+					return "";
+				} else {
+					return d.score.toFixed(1) 	
+				}	            
+	        });
             
             
         bars.selectAll(".carrierText")
@@ -288,7 +260,12 @@ var rmHrBarChart = function() {
                 .attr("cx", 11)
                 .attr("cy", function(d, i){
                     return i * (barHeight + barPadding);
-                });
+                })
+                 .attr("style", function(d) {
+					if(threshold && d.score.toFixed(1) <= 0) {
+						return "display: none";
+					}
+				});
                 
             bars.selectAll(".rankText")
                 .data(dataset)
@@ -308,7 +285,13 @@ var rmHrBarChart = function() {
                 .attr("y", function(d, i) {
                     return i * (barHeight + barPadding) + 5;
                 })
-                .text(function(d) { return d.rank;})    	
+                .text(function(d) { 
+		            if(threshold && d.score.toFixed(1) <= 0) {
+						return "";
+					} else {
+						return d.rank;	
+					}	            
+		        });
         } 
 		
 	}
@@ -320,7 +303,7 @@ var rmHrBarChart = function() {
         return chart;
     };
 
-    // Margin Accessor
+    //Accessors
     chart.margin = function(value) {
         if (!arguments.length) { return margin; }
         margin = value;
@@ -360,6 +343,12 @@ var rmHrBarChart = function() {
     chart.ranks = function(value) {
 	    if (!arguments.length) { return ranks; }
 	    ranks = value;
+	    return chart;
+    }
+    
+    chart.threshold = function(value) {
+	    if (!arguments.length) { return threshold; }
+	    threshold = value;
 	    return chart;
     }
     
