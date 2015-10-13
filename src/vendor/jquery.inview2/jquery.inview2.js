@@ -48,7 +48,7 @@
   function checkInView() {
     // Fuck IE and its quirks, we're doing this the right way.
     var $elements = $();
-    
+
     $.each(inviewObjects, function(i, inviewObject) {
       var selector  = inviewObject.data.selector,
           $element  = inviewObject.$element;

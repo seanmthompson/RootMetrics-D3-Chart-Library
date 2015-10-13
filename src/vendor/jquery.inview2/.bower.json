@@ -1,0 +1,14 @@
+{
+  "name": "jquery.inview2",
+  "homepage": "https://github.com/mmmeff/jquery.inview2",
+  "_release": "a5d303da50",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a5d303da501ddacf3bb9a1d91cfee2abebc1cb3c"
+  },
+  "_source": "https://github.com/mmmeff/jquery.inview2.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/mmmeff/jquery.inview2.git",
+  "_direct": true
+}

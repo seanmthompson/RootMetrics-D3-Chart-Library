@@ -7,6 +7,7 @@ var rmBarChart = function() {
 		height = 400,
 	 	width = 600,
 	 	ranks = false,
+	 	ticks = 5,
 		margin = {top: 40, right: 40, bottom: 60, left: 40},
 		min = 0,
 		max = 100,
@@ -172,7 +173,7 @@ var rmBarChart = function() {
 		yAxis = d3.svg.axis()
 		    .scale(y)
 		    .orient("left")
-		    .ticks(10)
+		    .ticks(ticks)
 		    .tickPadding(10)
 		    .tickSize(-cwidth);	
 				
@@ -367,6 +368,12 @@ var rmBarChart = function() {
     chart.ranks = function(value) {
 	    if (!arguments.length) { return ranks; }
 	    ranks = value;
+	    return chart;
+    }
+    
+    chart.ticks = function(value) {
+	    if (!arguments.length) { return ticks; }
+	    ticks = value;
 	    return chart;
     }
     

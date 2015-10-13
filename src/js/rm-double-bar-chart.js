@@ -10,6 +10,7 @@ var rmDoubleBarChart = function() {
 		errorBars = true,
 		min = 0,
 		max,
+		ticks = 5,
 		yAxis,
 		barWidth,
 		recWidth,
@@ -151,7 +152,7 @@ var rmDoubleBarChart = function() {
 		yAxis = d3.svg.axis()
 		    .scale(y)
 		    .orient("left")
-		    .ticks(10)
+		    .ticks(ticks)
 		    .tickPadding(10)
 		    .tickSize(-cwidth);	
 				
@@ -298,6 +299,12 @@ var rmDoubleBarChart = function() {
     chart.max = function(value) {
 	    if (!arguments.length) { return max; }
 	    max = value;
+	    return chart;
+    }
+    
+    chart.ticks = function(value) {
+	    if (!arguments.length) { return ticks; }
+	    ticks = value;
 	    return chart;
     }
     

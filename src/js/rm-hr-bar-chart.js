@@ -14,6 +14,7 @@ var rmHrBarChart = function() {
 		min = 0,
 		max = 0,
 		threshold = false,
+		ticks = 5,
 		xAxis,
 		barWidth,
 		barHeight = 30,
@@ -22,6 +23,7 @@ var rmHrBarChart = function() {
 		cheight,
 		x,
 		y,
+		addXAxis = false,
 		animationComplete = false;
 	
 	function chart(selection) {
@@ -82,7 +84,6 @@ var rmHrBarChart = function() {
 			.attr("x", cwidth)            
             .text(function(d) { 
 	            if(threshold && d.score.toFixed(1) <= 0) {
-		            console.log('test');
 					return "*";
 				} else {
 					return d.score.toFixed(1) 	
@@ -169,8 +170,23 @@ var rmHrBarChart = function() {
 
 		x = d3.scale.linear()
 				.domain([min, max])
-				.range([0, (cwidth - margin.right - margin.left - 75)]);						        
-		
+				.range([0, (cwidth - margin.right - margin.left - 75)]);
+				
+
+		if(addXAxis) {		
+			xAxis = d3.svg.axis()
+				    .scale(x)				    
+				    .orient("bottom")
+				    .ticks(ticks)
+				    .tickPadding(10)
+				    .tickSize(10);	
+				
+			g.append("g")
+		     .attr("class", "x axis")
+		     .attr("transform", "translate(90," + (cheight + 10) + ")");
+
+			g.select(".x.axis").call(xAxis);								        
+		}
 		
 		var bars = g.append('g')
 			.attr('class', 'bar-content');
@@ -349,6 +365,18 @@ var rmHrBarChart = function() {
     chart.threshold = function(value) {
 	    if (!arguments.length) { return threshold; }
 	    threshold = value;
+	    return chart;
+    }
+    
+    chart.addXAxis = function(value) {
+	   if (!arguments.length) { return addXAxis; }
+	    addXAxis = value;
+	    return chart; 
+    }
+    
+    chart.ticks = function(value) {
+	    if (!arguments.length) { return ticks; }
+	    ticks = value;
 	    return chart;
     }
     

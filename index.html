@@ -260,11 +260,11 @@
 	    var hrDoubleBarChart = rmHrDoubleBarChart().dataset(hrBarData).width($("#hrDoubleBarGraph").width());
 	    var hrDoubleChart = d3.select("#hrDoubleBarGraph").call(hrDoubleBarChart);
 	   
-	    var hrBarChart = rmHrBarChart().dataset(dataSet).width($("#hrBarGraph").width()).margin({ right: 30, left: 30, top: 30, bottom: 30 }).ranks(true);
+	    var hrBarChart = rmHrBarChart().dataset(dataSet).width($("#hrBarGraph").width()).margin({ right: 30, left: 30, top: 30, bottom: 30 }).ranks(true).addXAxis(true);
 	    var hrChart = d3.select("#hrBarGraph").call(hrBarChart);
 	    
-	    var hrBarChart = rmHrBarChart().dataset(dataSet2).width($("#hrBarGraphThreshold").width()).margin({ right: 30, left: 30, top: 30, bottom: 30 }).ranks(true).threshold(true);
-	    var hrChart = d3.select("#hrBarGraphThreshold").call(hrBarChart);
+	    var hrBarChart2 = rmHrBarChart().dataset(dataSet2).width($("#hrBarGraphThreshold").width()).margin({ right: 30, left: 30, top: 30, bottom: 30 }).ranks(true).threshold(true);
+	    var hrChart2 = d3.select("#hrBarGraphThreshold").call(hrBarChart2);
 					  
 	</script>
 </body>
