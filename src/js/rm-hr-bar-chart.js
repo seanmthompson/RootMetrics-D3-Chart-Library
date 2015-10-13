@@ -183,7 +183,7 @@ var rmHrBarChart = function() {
 				
 			g.append("g")
 		     .attr("class", "x axis")
-		     .attr("transform", "translate(90," + (height + 10) + ")");
+		     .attr("transform", "translate(90," + (cheight + 10) + ")");
 
 			g.select(".x.axis").call(xAxis);								        
 		}
