@@ -179,11 +179,11 @@ var rmHrBarChart = function() {
 				    .orient("bottom")
 				    .ticks(ticks)
 				    .tickPadding(10)
-				    .tickSize(10);	
+				    .tickSize(5);	
 				
 			g.append("g")
 		     .attr("class", "x axis")
-		     .attr("transform", "translate(90," + (cheight + 10) + ")");
+		     .attr("transform", "translate(90," + (dataset.length * (barHeight + barPadding) - (barPadding)) + ")");
 
 			g.select(".x.axis").call(xAxis);								        
 		}
