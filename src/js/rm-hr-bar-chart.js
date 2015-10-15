@@ -123,7 +123,11 @@ var rmHrBarChart = function() {
 					} else {
 						return "#999999";
 					}
-				});
+				}).style('display', function(d) { 
+		            if(threshold && d.score.toFixed(1) <= 0) {
+						return "none";
+					}	            
+		        });
 	        
 	    	ranks.data(dataset) 
 	    		 .style("fill", function(d) {
