@@ -92,7 +92,7 @@ var rmBarChart = function() {
 	            	return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  (y(d.score) - 5) + ")";
             	} 
 			})             
-            .text(function(d) { return d.score.toFixed(1) });
+            .text(function(d) { return d.score });
             
         errorBar.data(dataset)
         	.attr("class", function(d) { return d.name })
@@ -263,7 +263,7 @@ var rmBarChart = function() {
             .attr("transform", function(d, i) { 
 		        return "translate(" + ((i * barWidth) + (barWidth/2)) + "," +  cheight + ")"; 
              })   
-            .text(function(d) { return d.score.toFixed(1) });  
+            .text(function(d) { return d.score });
 			      
 	    bars.selectAll(".carrierText")
             .data(dataset)
