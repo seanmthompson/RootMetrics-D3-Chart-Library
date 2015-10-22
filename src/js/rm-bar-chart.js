@@ -6,7 +6,7 @@ var rmBarChart = function() {
 		svg,
 		height = 400,
 	 	width = 600,
-	 	ranks = false,
+	 	addRanks = false,
 	 	ticks = 5,
 		margin = {top: 40, right: 40, bottom: 60, left: 40},
 		min = 0,
@@ -196,7 +196,7 @@ var rmBarChart = function() {
             .text(function(d) { return d.score });
            
 			
-		if(ranks) {
+		if(addRanks) {
 			
 			rankCircles.exit().remove();
 	       
@@ -356,7 +356,7 @@ var rmBarChart = function() {
 	    return chart;
     }
     
-    chart.ranks = function(value) {
+    chart.addRanks = function(value) {
 	    if (!arguments.length) { return ranks; }
 	    ranks = value;
 	    return chart;
