@@ -67,7 +67,7 @@ var rmBarChart = function() {
 		var errorBar = barContent.selectAll('.error-bar').data(dataset);
 		var carrierText = barContent.selectAll('.carrierText').data(dataset);
 		var xLines = xAxis.selectAll(".xaxis").data(dataset);		
-		var upperMax = customMax ? max : d3.extent(dataset, function(d) { return d.upper; })[1];
+		var upperMax = customMax ? max : d3.extent(dataset, function(d) { return +d.upper; })[1];
 
 		y.domain([min, upperMax]);
 		svg.select(".y.axis").transition().duration(500).call(yAxis);
