@@ -62,7 +62,7 @@ var rmBarChart = function() {
 		var barContent = svg.select('.bar-content');							
 		var bars = barContent.selectAll('.carrier-bar').data(dataset);	
 		var scores = barContent.selectAll('.scoreText').data(dataset);
-		var ranks = barContent.selectAll('.rankText').data(dataset);
+		var rankText = barContent.selectAll('.rankText').data(dataset);
 		var rankCircles = barContent.selectAll('.rankCircle').data(dataset);
 		var errorBar = barContent.selectAll('.error-bar').data(dataset);
 		var carrierText = barContent.selectAll('.carrierText').data(dataset);
@@ -251,9 +251,9 @@ var rmBarChart = function() {
 				.attr("transform", function(d, i) { return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; }) 
 			
 			
-			ranks.exit().remove();
+			rankText.exit().remove();
 	       
-			ranks.enter()
+			rankText.enter()
 	            .append("text")
 	            .style("font-size", "12px")
 	            .attr("class", "rankText")
@@ -271,7 +271,7 @@ var rmBarChart = function() {
 	            })
 	            .text(function(d, i){ return d.rank; });
 			
-	        ranks.transition()
+	        rankText.transition()
 				 .duration(500)
 	             .attr("transform", function(d, i) { 
 					return "translate(" + (((i * barWidth)) + (barWidth /2 )) + ",0)"; 
