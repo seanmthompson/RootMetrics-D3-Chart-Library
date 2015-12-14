@@ -83,10 +83,10 @@ var rmHrBarChart = function() {
 			.ease('exp-out')
 			.attr("x", cwidth)            
             .text(function(d) { 
-	            if(threshold && d.score.toFixed(1) <= 0) {
+	            if(threshold && +d.score <= 0) {
 					return "*";
 				} else {
-					return d.score.toFixed(1) 	
+					return d.score;	
 				}	            
 	        });
             
@@ -124,7 +124,7 @@ var rmHrBarChart = function() {
 						return "#999999";
 					}
 				}).style('display', function(d) { 
-		            if(threshold && d.score.toFixed(1) <= 0) {
+		            if(threshold && +d.score <= 0) {
 						return "none";
 					}	            
 		        });
@@ -138,7 +138,7 @@ var rmHrBarChart = function() {
 					}
 				 })          
 	             .text(function(d) { 
-		            if(threshold && d.score.toFixed(1) <= 0) {
+		            if(threshold && +d.score <= 0) {
 						return "";
 					} else {
 						return d.rank;	
@@ -233,10 +233,10 @@ var rmHrBarChart = function() {
             })
             .attr("x", 0)  
             .text(function(d) { 
-	            if(threshold && d.score.toFixed(1) <= 0) {
+	            if(threshold && +d.score <= 0) {
 					return "";
 				} else {
-					return d.score.toFixed(1) 	
+					return d.score	
 				}	            
 	        });
             
@@ -282,7 +282,7 @@ var rmHrBarChart = function() {
                     return i * (barHeight + barPadding);
                 })
                  .attr("style", function(d) {
-					if(threshold && d.score.toFixed(1) <= 0) {
+					if(threshold && +d.score <= 0) {
 						return "display: none";
 					}
 				});
@@ -306,7 +306,7 @@ var rmHrBarChart = function() {
                     return i * (barHeight + barPadding) + 5;
                 })
                 .text(function(d) { 
-		            if(threshold && d.score.toFixed(1) <= 0) {
+		            if(threshold && +d.score <= 0) {
 						return "";
 					} else {
 						return d.rank;	
