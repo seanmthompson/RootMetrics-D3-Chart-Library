@@ -6,11 +6,12 @@ var rmBarChart = function() {
 		svg,
 		height = 400,
 	 	width = 600,
-	 	addRanks = false,
+	 	ranks = false,
 	 	ticks = 5,
 		margin = {top: 40, right: 40, bottom: 60, left: 40},
 		min = 0,
 		max = 100,
+		customMax = false,
 		barWidth,
 		recWidth,
 		errorBars = true,
@@ -65,7 +66,7 @@ var rmBarChart = function() {
 		var errorBar = barContent.selectAll('.error-bar').data(dataset);
 		var carrierText = barContent.selectAll('.carrierText').data(dataset);
 		var xLines = xAxis.selectAll(".xaxis").data(dataset);		
-		var upperMax = d3.extent(dataset, function(d) { return d.upper; })[1];
+		var upperMax = customMax ? max : d3.extent(dataset, function(d) { return d.upper; })[1];
 
 		y.domain([min, upperMax]);
 		svg.select(".y.axis").transition().duration(500).call(yAxis);
@@ -101,8 +102,9 @@ var rmBarChart = function() {
 								
 		bars.enter()
 			.append('rect')
-			.attr("class", function(d) { return d.name })
-			.classed('carrier-bar', true)
+			.attr('class', function(d) {
+				return 'carrier-bar';
+			})
 			.attr("y", cheight)
 			.attr("transform", function(d, i) { return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth/2) + ",0)"; })
 			.attr("height", 0);
@@ -111,6 +113,9 @@ var rmBarChart = function() {
 			.duration(500)
 			.delay(function(d, i) { return 100 * i })
 			.ease('exp-out')
+			.attr('class', function(d) {
+				return d.name + ' carrier-bar';
+			})
 			.attr("transform", function(d, i) { return "translate(" + ((i * barWidth) + (barWidth/2) - recWidth/2) + ",0)"; })			
 			.attr("height", function(d) { return cheight - y(d.score); })	
 			.attr("width", recWidth)		
@@ -133,6 +138,9 @@ var rmBarChart = function() {
 					.duration(500)
 					.delay(function(d, i) { return 100 * i})
 					.ease('exp-out')
+					.attr('class', function(d) {
+						return d.name + ' error-bar secondary';
+					})
 					.attr("transform", function(d, i) {
 						var upperScale = y(d.upper);
 						return "translate(" + ((i * barWidth) + (barWidth/2)) + "," + upperScale + ")"; 
@@ -196,7 +204,7 @@ var rmBarChart = function() {
             .text(function(d) { return d.score });
            
 			
-		if(addRanks) {
+		if(ranks) {
 			
 			rankCircles.exit().remove();
 	       
@@ -350,13 +358,19 @@ var rmBarChart = function() {
 	    return chart;
     }
     
+    chart.customMax = function(value) {
+	    if (!arguments.length) { return customMax; }
+	    customMax = value;
+	    return chart;
+    }
+    
     chart.errorBars = function(value) {
 	    if (!arguments.length) { return errorBars; }
 	    errorBars = value;
 	    return chart;
     }
     
-    chart.addRanks = function(value) {
+    chart.ranks = function(value) {
 	    if (!arguments.length) { return ranks; }
 	    ranks = value;
 	    return chart;
