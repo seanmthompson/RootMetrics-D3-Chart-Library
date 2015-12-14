@@ -14,6 +14,7 @@ var rmBarChart = function() {
 		customMax = false,
 		barWidth,
 		recWidth,
+		ranks = false,
 		errorBars = true,
 		cwidth,
 		cheight,
